@@ -31,12 +31,14 @@ public class Servico {
     @Column(name = "avaliacao", nullable = true)
     private int avaliacao; // Avaliação do serviço (por exemplo, uma nota de 1 a 5)
 
+    @Column(name = "valor", nullable = true)
+    private double valor; // Avaliação do serviço (por exemplo, uma nota de 1 a 5)
 
     public Servico() {
         // Construtor padrão
     }
 
-    public Servico(int id, Usuario usuario, String nome, String descricao, String img, Date data, int avaliacao) {
+    public Servico(int id, Usuario usuario, String nome, String descricao, String img, Date data, int avaliacao, double valor) {
         this.id = id;
         this.usuario = usuario;
         this.nome = nome;
@@ -44,6 +46,7 @@ public class Servico {
         this.img = img;
         this.data = data;
         this.avaliacao = avaliacao;
+        this.valor = valor;
     }
 
     // GETTERS E SETTERS
@@ -104,7 +107,13 @@ public class Servico {
         this.avaliacao = avaliacao;
     }
 
+    public double getValor() {
+        return valor;
+    }
 
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
 
 
 }
