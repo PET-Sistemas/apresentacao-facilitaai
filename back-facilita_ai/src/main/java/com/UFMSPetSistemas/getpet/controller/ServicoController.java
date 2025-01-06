@@ -1,78 +1,34 @@
-
 package com.UFMSPetSistemas.getpet.controller;
 
-
-import com.UFMSPetSistemas.getpet.model.entities.PrestacaoServico;
-import com.UFMSPetSistemas.getpet.model.entities.Usuario;
-import com.UFMSPetSistemas.getpet.model.repository.PrestacaoServicoRepository;
+import com.UFMSPetSistemas.getpet.model.entities.Servico;
 import com.UFMSPetSistemas.getpet.model.repository.ServicoRepository;
-import com.UFMSPetSistemas.getpet.model.repository.TipoServicoRepository;
-import com.UFMSPetSistemas.getpet.model.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-
 @RestController
-@CrossOrigin
+@RequestMapping("/servicos") // Base da URL para os endpoints
 public class ServicoController {
 
+    @Autowired
+    private ServicoRepository servicoRepository;
 
-    private final ServicoRepository repo;
-    private final PrestacaoServicoRepository prestrepo;
-
-
-    public ServicoController(ServicoRepository repo, PrestacaoServicoRepository prestrepo) {
-        this.repo = repo;
-        this.prestrepo = prestrepo;
+    @GetMapping
+    public ResponseEntity<List<Servico>> getServicos() {
+        List<Servico> servicos = servicoRepository.findAll();
+        return ResponseEntity.ok(servicos); // Retorna HTTP 200 com a lista de serviços
     }
 
-    @GetMapping(path = "/servico/{avaliacao}")
-    public List<PrestacaoServico> getServicosByAvaliacao(@PathVariable int avaliacao) {
-        return this.prestrepo.findByAvaliacaoGreaterThanEqual(avaliacao);
-    }
-
-
-
-    @GetMapping(path = "/servico/{id}")
-    public PrestacaoServico getById(@PathVariable Long id) {
-        return this.repo.findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("Serviço com id %d não encontrado", id)));
-    }
-
-
-    @PutMapping(path = "/servico/{id}")
-    public PrestacaoServico putServico(@RequestBody PrestacaoServico newServico, @PathVariable Long id) {
-        PrestacaoServico oldServico = this.repo.findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("Serviço com id %d não encontrado", id)));
-        newServico.setId(oldServico.getId()); // Atualiza o ID para manter a referência
-        return this.repo.save(newServico);
-    }
-
-
-    @DeleteMapping("/servico/{id}")
-    public void deleteServico(@PathVariable Long id) {
-        if (!this.repo.existsById(id)) {
-            throw new RuntimeException(String.format("Serviço com id %d não encontrado", id));
+    @PostMapping
+    public ResponseEntity<Servico> setServico(@RequestBody Servico servico) {
+        try {
+            Servico novoServico = servicoRepository.save(servico);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novoServico); // Retorna HTTP 201 com o objeto criado
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Retorna HTTP 500 em caso de erro
         }
-        this.repo.deleteById(id);
-    }
-
-    @GetMapping(path = "/servico/preco/{preco}")
-    public List<PrestacaoServico> getServicoByPreco(@PathVariable Double preco) {
-        return this.repo.findByValorServico(preco);
-    }
-
-    // Não implementável com o schema de banco que temos hoje
-    // @GetMapping(path = "/servico/prazo/{prazo}")
-    // public List<PrestacaoServico> getServicoByPrazo(@PathVariable String prazo) {
-    //     return this.repo.findByPrazo(prazo);
-    // }
-
-
-    @PostMapping(path = "/servico")
-    public PrestacaoServico setServico(@RequestBody PrestacaoServico novoServico) {
-        return this.repo.save(novoServico);
     }
 }
-
-
