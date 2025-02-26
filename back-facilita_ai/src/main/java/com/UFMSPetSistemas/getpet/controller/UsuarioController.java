@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api")
+@CrossOrigin
 public class UsuarioController {
     UsuarioRepository repo;
 
@@ -36,7 +36,7 @@ public class UsuarioController {
     }
 
     @GetMapping(path = "/usuario/{id}")
-    public Usuario getById(@PathVariable Long id){
+    public Usuario getById(@PathVariable Integer id){
         return this
                 .repo
                 .findById(id)
@@ -44,14 +44,14 @@ public class UsuarioController {
     }
 
     @PutMapping(path = "/usuario/{id}")
-    public Usuario putUsuario(@RequestBody Usuario newColaborador, @PathVariable Long id){
+    public Usuario putUsuario(@RequestBody Usuario newColaborador, @PathVariable Integer id){
         Usuario oldColaborador = this.repo.findById(id).isPresent() ? this.repo.findById(id).get() : new Usuario();
         newColaborador.setId(oldColaborador.getId());
         return this.repo.save(newColaborador);
     }
 
     @DeleteMapping("/usuario/{id}")
-    void deleteColaborador(@PathVariable Long id) {
+    void deleteColaborador(@PathVariable Integer id) {
         this.repo.deleteById(id);
     }
 

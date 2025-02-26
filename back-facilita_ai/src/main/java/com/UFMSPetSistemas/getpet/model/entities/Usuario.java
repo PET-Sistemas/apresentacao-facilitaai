@@ -11,8 +11,9 @@ import java.util.Objects;
 
 @Entity
 public class Usuario {
-	private @Id @GeneratedValue
-	Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // Estratégia para geração de ID (auto incremento no banco)
+	private int id;
 
 	private @NotBlank(message = "O nome completo é obrigatório.")
 	@Size(min = 3, max = 50, message = "O nome completo deve ter entre 3 e 50 caracteres.")
@@ -50,11 +51,11 @@ public class Usuario {
 
 	private String senha;
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
